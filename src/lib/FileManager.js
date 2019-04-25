@@ -1,6 +1,7 @@
 import "standard-file-js/dist/regenerator.js";
 import { StandardFile, SFAbstractCrypto, SFItemTransformer, SFHttpManager, SFItem } from 'standard-file-js';
 import EncryptionWorker from './util/encryption.worker.js';
+import ExtensionBridge from "./ExtensionBridge"
 
 export default class FileManager {
   static FileItemContentTypeKey = "SN|FileSafe|File";
@@ -24,10 +25,16 @@ export default class FileManager {
     })
   }
 
+  findFileDescriptor(uuid) {
+    return this.extensionBridge.getFileDescriptors().find((fileDescriptor) => {
+      return fileDescriptor.uuid == uuid;
+    })
+  }
+
   fileDescriptorsEncryptedWithCredential(credential) {
     var descriptors = this.extensionBridge.getFileDescriptors();
     return descriptors.filter((descriptor) => {
-      return descriptor.content.references.find((ref) => uuid == credential.uuid);
+      return descriptor.content.references.find((ref) => ref.uuid == credential.uuid);
     })
   }
 
@@ -48,7 +55,7 @@ export default class FileManager {
     })
   }
 
-  async uploadFile(itemParams, inputFileName, fileType, credential, note) {
+  async uploadFile({itemParams, inputFileName, fileType, credential, note}) {
     var integration = this.integrationManager.getDefaultUploadSource();
     var outputFileName = `${inputFileName}.sf.json`;
 
@@ -58,9 +65,11 @@ export default class FileManager {
       worker.addEventListener("message", (event) => {
         var data = event.data;
         if(data.error) {
+          console.log("Error uploading file", data.error);
           reject(data.error);
           return;
         }
+
         var fileDescriptor = new SFItem({
           content_type: ExtensionBridge.FileDescriptorContentTypeKey,
           content: {
@@ -70,10 +79,16 @@ export default class FileManager {
           }
         });
 
-        fileDescriptor.addItemAsRelationship(note);
+        if(note) {
+          fileDescriptor.addItemAsRelationship(note);
+        }
+
         fileDescriptor.addItemAsRelationship(credential);
-        this.extensionBridge.createItem(fileDescriptor);
-        resolve();
+
+        this.extensionBridge.createItem(fileDescriptor, (createdItems) => {
+          console.log("Created items", createdItems);
+          resolve(createdItems[0]);
+        });
       });
 
       var operation = "upload";
@@ -108,7 +123,7 @@ export default class FileManager {
     })
   }
 
-  async encryptFile(data, inputFileName, fileType, credential) {
+  async encryptFile({data, inputFileName, fileType, credential}) {
     return new Promise((resolve, reject) => {
       const worker = new EncryptionWorker();
 
@@ -128,8 +143,10 @@ export default class FileManager {
     })
   }
 
-  async decryptFile({fileDescriptor, fileItem}) {
-    let credential = this.credentialManager.credentialForFileDescriptor(fileDescriptor);
+  async decryptFile({fileDescriptor, fileItem, credential}) {
+    if(!credential) {
+      credential = this.credentialManager.credentialForFileDescriptor(fileDescriptor);
+    }
     return new Promise((resolve, reject) => {
       const worker = new EncryptionWorker();
 

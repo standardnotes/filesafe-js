@@ -1,12 +1,15 @@
 var path = require('path');
 var webpack = require('webpack');
+const uglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
+
 module.exports = {
     entry: {
-      "filesafe": "./src/Filesafe.js",
+      "filesafe.js": "./src/Filesafe.js",
+      "filesafe.min.js": "./src/Filesafe.js",
     },
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: 'filesafe.js',
+        filename: './[name]',
         library: 'FilesafeJS',
         libraryTarget: 'commonjs2'
     },
@@ -21,8 +24,9 @@ module.exports = {
           use: {
             loader: 'worker-loader',
             options: {
-              inline: true,
-              fallback: false
+              name: 'filesafe-js/EncryptionWorker.js'
+              // inline: true,
+              // fallback: false
             }
           }
         },
@@ -32,6 +36,10 @@ module.exports = {
         colors: true
     },
     plugins: [
+      new uglifyJsPlugin({
+        include: /\.min\.js$/,
+        minimize: true
+      }),
     ],
     devtool: 'source-map'
 };

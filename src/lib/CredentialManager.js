@@ -30,8 +30,6 @@ export default class CredentialManager {
       }
     }
 
-    console.log("Reloaded credentials", this.credentials);
-
     this.onCredentialLoad();
 
     if(this.credentials.length > 0) {
@@ -62,7 +60,6 @@ export default class CredentialManager {
   }
 
   credentialForFileDescriptor(fileDescriptor) {
-    console.log("Getting credential for file", fileDescriptor);
     return this.credentials.find((candidate) => {
       return fileDescriptor.content.references.find((ref) => ref.uuid == candidate.uuid);
     })

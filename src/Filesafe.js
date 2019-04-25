@@ -4,12 +4,19 @@ import IntegrationManager from "./lib/IntegrationManager"
 import CredentialManager from "./lib/CredentialManager"
 import FileManager from "./lib/FileManager"
 import Utils from "./lib/util/Utils"
+import { SFItem } from 'standard-file-js';
 
 export default class Filesafe {
-  constructor({componentManager, onFilesChange}) {
+  constructor({componentManager}) {
+    // Allow consumers to construct these objects
+    this.SFItem = SFItem;
+    
+    this.dataChangeObservers = [];
+    this.newFileDescriptorHandlers = [];
+
     this.extensionBridge = new ExtensionBridge(componentManager);
     this.extensionBridge.addEventHandler((eventName) => {
-      onFilesChange && onFilesChange();
+      this.notifyObservers();
     });
 
     this.relayManager = new RelayManager();
@@ -32,7 +39,39 @@ export default class Filesafe {
     this.extensionBridge.beginStreamingFiles();
   }
 
+  /*
+    Observe changes
+  */
+
+  addNewFileDescriptorHandler(handler) {
+    this.newFileDescriptorHandlers.push(handler);
+  }
+
+  notifyObservers() {
+    for(let observer of this.dataChangeObservers) {
+      observer();
+    }
+  }
+
+  addDataChangeObserver(observer) {
+    this.dataChangeObservers.push(observer);
+    return observer;
+  }
+
+  removeDataChangeObserver(observer) {
+    this.dataChangeObservers = this.dataChangeObservers.filter((candidate) => candidate != observer);
+  }
+
+
   /* Files */
+
+  getAllFileDescriptors() {
+    return this.fileManager.getAllFileDescriptors();
+  }
+
+  findFileDescriptor(uuid) {
+    return this.fileManager.findFileDescriptor(uuid);
+  }
 
   fileDescriptorsForNote(note) {
     return this.fileManager.fileDescriptorsForNote(note);
@@ -47,7 +86,11 @@ export default class Filesafe {
   }
 
   async uploadFile(itemParams, inputFileName, fileType, credential, note) {
-    return this.fileManager.uploadFile(itemParams, inputFileName, fileType, credential, note);
+    let descriptor = await this.fileManager.uploadFile(itemParams, inputFileName, fileType, credential, note);
+    if(descriptor) {
+      for(let observer of this.newFileDescriptorHandlers) { observer(descriptor);}
+    }
+    return descriptor;
   }
 
   async downloadFileFromDescriptor(fileDescriptor) {
@@ -58,8 +101,16 @@ export default class Filesafe {
     return this.fileManager.encryptFile(data, inputFileName, fileType, credential);
   }
 
-  async decryptFile({fileDescriptor, fileItem}) {
+  /*
+    if fileDescriptor is available, we'll use that to determine credentials
+    otherwise, passed in credential will be used
+   */
+  async decryptFile({fileDescriptor, fileItem, credential}) {
     return this.fileManager.decryptFile({fileDescriptor, fileItem});
+  }
+
+  downloadBase64Data({base64Data, fileName, fileType}) {
+    Utils.downloadData(Utils.base64toBinary(base64Data), fileName, fileType);
   }
 
   createTemporaryFileUrl({base64Data, dataType}) {
@@ -72,7 +123,7 @@ export default class Filesafe {
     return this.credentialManager.createNewCredentials();
   }
 
-  numberOffileDescriptorsEncryptedWithCredential(credential)  {
+  numberOfFilesEncryptedWithCredential(credential)  {
     return this.fileManager.fileDescriptorsEncryptedWithCredential(credential).length;
   }
 
@@ -125,5 +176,13 @@ export default class Filesafe {
 
   deleteIntegration(integration) {
     return this.integrationManager.deleteIntegration(integration);
+  }
+
+  /*
+    Misc
+  */
+
+  getPlatform() {
+    return this.extensionBridge.getPlatform();
   }
 }

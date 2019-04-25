@@ -102,9 +102,10 @@ export default class ExtensionBridge {
   }
 
   createItems(items, callback) {
-    for(var item of items) { item.uuid = null; }
+    // Not sure why we're nulling UUIDs here. If this was neccessary, componentManager should be the one to do it.
+    // for(var item of items) { item.uuid = null; }
     this.componentManager.createItems(items, (createdItems) => {
-      callback && callback(createdItems);
+      callback && callback(createdItems.map((item) => new SFItem(item)));
     })
   }
 

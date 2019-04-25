@@ -40,8 +40,9 @@ self.addEventListener('message', async function(e) {
       self.postMessage({error: error});
     })
   } else if(data.operation == "upload") {
-    RelayManager.get().setCredentials(data.credentials);
-    RelayManager.get().uploadFile(data.outputFileName, data.itemParams, data.integration).then((metadata) => {
+    let relayManager = new RelayManager();
+    relayManager.setCredentials(data.credentials);
+    relayManager.uploadFile(data.outputFileName, data.itemParams, data.integration).then((metadata) => {
       self.postMessage({metadata});
     }).catch((error) => {
       self.postMessage({error: error});
