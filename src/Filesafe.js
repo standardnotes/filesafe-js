@@ -10,7 +10,7 @@ export default class Filesafe {
   constructor({componentManager}) {
     // Allow consumers to construct these objects
     this.SFItem = SFItem;
-    
+
     this.dataChangeObservers = [];
     this.newFileDescriptorHandlers = [];
 
@@ -91,6 +91,29 @@ export default class Filesafe {
       for(let observer of this.newFileDescriptorHandlers) { observer(descriptor);}
     }
     return descriptor;
+  }
+
+  async encryptAndUploadJavaScriptFileObject(file) {
+    return new Promise((resolve, reject) => {
+      let reader = new FileReader();
+      reader.onload = async (e) => {
+        var data = e.target.result;
+        var arrayBuffer = data;
+        var base64Data = await SFJS.crypto.arrayBufferToBase64(arrayBuffer);
+        let result = await this.encryptAndUploadData(base64Data, file.name, file.type);
+        resolve(result);
+      }
+      reader.readAsArrayBuffer(file);
+    })
+  }
+
+  async encryptAndUploadData(base64Data, inputFileName, fileType) {
+    const credential = this.getDefaultCredentials();
+    return this.encryptFile({data: base64Data, inputFileName, fileType, credential}).then(async (itemParams) => {
+      return this.uploadFile({itemParams, inputFileName, fileType, credential}).catch((uploadError) => {
+        console.error("filesafe-js | error uploading file:", uploadError);
+      })
+    })
   }
 
   async downloadFileFromDescriptor(fileDescriptor) {

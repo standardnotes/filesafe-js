@@ -86,7 +86,6 @@ export default class FileManager {
         fileDescriptor.addItemAsRelationship(credential);
 
         this.extensionBridge.createItem(fileDescriptor, (createdItems) => {
-          console.log("Created items", createdItems);
           resolve(createdItems[0]);
         });
       });
