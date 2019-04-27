@@ -129,7 +129,7 @@ export default class Filesafe {
     otherwise, passed in credential will be used
    */
   async decryptFile({fileDescriptor, fileItem, credential}) {
-    return this.fileManager.decryptFile({fileDescriptor, fileItem});
+    return this.fileManager.decryptFile({fileDescriptor, fileItem, credential});
   }
 
   downloadBase64Data({base64Data, fileName, fileType}) {
@@ -207,5 +207,9 @@ export default class Filesafe {
 
   getPlatform() {
     return this.extensionBridge.getPlatform();
+  }
+
+  copyTextToClipboard(text)  {
+    return Utils.copyTextToClipboard(text);
   }
 }

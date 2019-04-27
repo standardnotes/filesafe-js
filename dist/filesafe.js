@@ -14693,7 +14693,8 @@ function () {
                 fileDescriptor = _ref4.fileDescriptor, fileItem = _ref4.fileItem, credential = _ref4.credential;
                 return _context9.abrupt("return", this.fileManager.decryptFile({
                   fileDescriptor: fileDescriptor,
-                  fileItem: fileItem
+                  fileItem: fileItem,
+                  credential: credential
                 }));
 
               case 2:
@@ -14828,6 +14829,11 @@ function () {
     key: "getPlatform",
     value: function getPlatform() {
       return this.extensionBridge.getPlatform();
+    }
+  }, {
+    key: "copyTextToClipboard",
+    value: function copyTextToClipboard(text) {
+      return __WEBPACK_IMPORTED_MODULE_5__lib_util_Utils__["a" /* default */].copyTextToClipboard(text);
     }
   }]);
 
@@ -17228,6 +17234,30 @@ function () {
       return window.URL.createObjectURL(new Blob([data], {
         type: fileType ? fileType : 'text/json'
       }));
+    }
+  }, {
+    key: "copyTextToClipboard",
+    value: function copyTextToClipboard(text) {
+      if (window.clipboardData && window.clipboardData.setData) {
+        // IE specific code path to prevent textarea being shown while dialog is visible.
+        return clipboardData.setData("Text", text);
+      } else if (document.queryCommandSupported && document.queryCommandSupported("copy")) {
+        var textarea = document.createElement("textarea");
+        textarea.textContent = text;
+        textarea.style.position = "fixed"; // Prevent scrolling to bottom of page in MS Edge.
+
+        document.body.appendChild(textarea);
+        textarea.select();
+
+        try {
+          return document.execCommand("copy"); // Security exception may be thrown by some browsers.
+        } catch (ex) {
+          console.warn("Copy to clipboard failed.", ex);
+          return false;
+        } finally {
+          document.body.removeChild(textarea);
+        }
+      }
     }
   }]);
 
