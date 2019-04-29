@@ -7,10 +7,12 @@ import Utils from "./lib/util/Utils"
 import { SFItem } from 'standard-file-js';
 
 export default class Filesafe {
-  constructor({componentManager}) {
-    // Allow consumers to construct these objects
-    this.SFItem = SFItem;
+  // Allow consumers to construct these objects without including entire standard-file-js lib
+  static getSFItemClass() {
+    return SFItem;
+  }
 
+  constructor({componentManager}) {
     this.dataChangeObservers = [];
     this.newFileDescriptorHandlers = [];
 
@@ -62,6 +64,12 @@ export default class Filesafe {
     this.dataChangeObservers = this.dataChangeObservers.filter((candidate) => candidate != observer);
   }
 
+  /* Set current note. Used by filesafe-embed to show files for current note. */
+
+  setCurrentNote(note) {
+    this.currentNote = note;
+  }
+
 
   /* Files */
 
@@ -71,6 +79,10 @@ export default class Filesafe {
 
   findFileDescriptor(uuid) {
     return this.fileManager.findFileDescriptor(uuid);
+  }
+
+  fileDescriptorsForCurrentNote() {
+    return this.fileManager.fileDescriptorsForNote(this.currentNote);
   }
 
   fileDescriptorsForNote(note) {
@@ -85,32 +97,32 @@ export default class Filesafe {
     return this.fileManager.deleteFileFromDescriptor(fileDescriptor);
   }
 
-  async uploadFile(itemParams, inputFileName, fileType, credential, note) {
-    let descriptor = await this.fileManager.uploadFile(itemParams, inputFileName, fileType, credential, note);
+  async uploadFile({fileItem, inputFileName, fileType, credential, note}) {
+    let descriptor = await this.fileManager.uploadFile({fileItem, inputFileName, fileType, credential, note});
     if(descriptor) {
       for(let observer of this.newFileDescriptorHandlers) { observer(descriptor);}
     }
     return descriptor;
   }
 
-  async encryptAndUploadJavaScriptFileObject(file) {
+  async encryptAndUploadJavaScriptFileObject(jsFile) {
     return new Promise((resolve, reject) => {
       let reader = new FileReader();
       reader.onload = async (e) => {
         var data = e.target.result;
         var arrayBuffer = data;
         var base64Data = await SFJS.crypto.arrayBufferToBase64(arrayBuffer);
-        let result = await this.encryptAndUploadData(base64Data, file.name, file.type);
+        let result = await this.encryptAndUploadData({base64Data: base64Data, inputFileName: jsFile.name, fileType: jsFile.type});
         resolve(result);
       }
-      reader.readAsArrayBuffer(file);
+      reader.readAsArrayBuffer(jsFile);
     })
   }
 
-  async encryptAndUploadData(base64Data, inputFileName, fileType) {
+  async encryptAndUploadData({base64Data, inputFileName, fileType}) {
     const credential = this.getDefaultCredentials();
-    return this.encryptFile({data: base64Data, inputFileName, fileType, credential}).then(async (itemParams) => {
-      return this.uploadFile({itemParams, inputFileName, fileType, credential}).catch((uploadError) => {
+    return this.encryptFile({data: base64Data, inputFileName, fileType, credential}).then(async (fileItem) => {
+      return this.uploadFile({fileItem, inputFileName, fileType, credential}).catch((uploadError) => {
         console.error("filesafe-js | error uploading file:", uploadError);
       })
     })
@@ -120,8 +132,8 @@ export default class Filesafe {
     return this.fileManager.downloadFileFromDescriptor(fileDescriptor);
   }
 
-  async encryptFile(data, inputFileName, fileType, credential) {
-    return this.fileManager.encryptFile(data, inputFileName, fileType, credential);
+  async encryptFile({data, inputFileName, fileType, credential}) {
+    return this.fileManager.encryptFile({data, inputFileName, fileType, credential});
   }
 
   /*

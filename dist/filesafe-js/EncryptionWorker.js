@@ -13915,11 +13915,11 @@ self.addEventListener('message', async function(e) {
       }
     });
 
-    var itemParamsObject = new __WEBPACK_IMPORTED_MODULE_2_standard_file_js__["SFItemParams"](fileItem, data.keys, data.authParams);
-    itemParamsObject.paramsForSync().then((itemParams) => {
+    var fileItemObject = new __WEBPACK_IMPORTED_MODULE_2_standard_file_js__["SFItemParams"](fileItem, data.keys, data.authParams);
+    fileItemObject.paramsForSync().then((params) => {
       // Encryption complete
       self.postMessage({
-        itemParams: itemParams
+        fileItem: params
       });
     })
   } else if(data.operation == "decrypt") {
@@ -13941,7 +13941,7 @@ self.addEventListener('message', async function(e) {
   } else if(data.operation == "upload") {
     let relayManager = new __WEBPACK_IMPORTED_MODULE_3__RelayManager__["a" /* default */]();
     relayManager.setCredentials(data.credentials);
-    relayManager.uploadFile(data.outputFileName, data.itemParams, data.integration).then((metadata) => {
+    relayManager.uploadFile(data.outputFileName, data.fileItem, data.integration).then((metadata) => {
       self.postMessage({metadata});
     }).catch((error) => {
       self.postMessage({error: error});

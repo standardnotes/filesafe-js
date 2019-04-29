@@ -55,9 +55,10 @@ export default class FileManager {
     })
   }
 
-  async uploadFile({itemParams, inputFileName, fileType, credential, note}) {
+  async uploadFile({fileItem, inputFileName, fileType, credential, note}) {
     var integration = this.integrationManager.getDefaultUploadSource();
-    var outputFileName = `${inputFileName}.sf.json`;
+    let fileExt = inputFileName.split(".")[1];
+    var outputFileName = `${fileItem.uuid}.${fileExt}.sf.json`;
 
     return new Promise((resolve, reject) => {
       const worker = new EncryptionWorker();
@@ -93,7 +94,7 @@ export default class FileManager {
       var operation = "upload";
       var params = {
         outputFileName: outputFileName,
-        itemParams: itemParams,
+        fileItem: fileItem,
         integration: integration,
         operation: operation,
         credentials: this.credentialManager.getDefaultCredentials()
@@ -127,7 +128,7 @@ export default class FileManager {
       const worker = new EncryptionWorker();
 
       worker.addEventListener("message", function (event) {
-        resolve(event.data.itemParams);
+        resolve(event.data.fileItem);
       });
 
       worker.postMessage({
