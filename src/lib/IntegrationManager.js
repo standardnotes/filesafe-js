@@ -53,13 +53,16 @@ export default class IntegrationManager {
   }
 
   setIntegrationAsDefault(integration) {
+    let saveItems = [integration];
     var currentDefault = this.getDefaultUploadSource();
     if(currentDefault) {
       currentDefault.content.isDefaultUploadSource = false;
+      saveItems.push(currentDefault);
     }
 
+
     integration.content.isDefaultUploadSource = true;
-    this.extensionBridge.saveItem(integration);
+    this.extensionBridge.saveItems(saveItems);
   }
 
   deleteIntegration(integrationObject) {

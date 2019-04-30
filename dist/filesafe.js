@@ -14863,6 +14863,11 @@ function () {
     */
 
   }, {
+    key: "base64toBinary",
+    value: function base64toBinary(base64String) {
+      return __WEBPACK_IMPORTED_MODULE_5__lib_util_Utils__["a" /* default */].base64toBinary(base64String);
+    }
+  }, {
     key: "getPlatform",
     value: function getPlatform() {
       return this.extensionBridge.getPlatform();
@@ -16611,14 +16616,16 @@ function () {
   }, {
     key: "setIntegrationAsDefault",
     value: function setIntegrationAsDefault(integration) {
+      var saveItems = [integration];
       var currentDefault = this.getDefaultUploadSource();
 
       if (currentDefault) {
         currentDefault.content.isDefaultUploadSource = false;
+        saveItems.push(currentDefault);
       }
 
       integration.content.isDefaultUploadSource = true;
-      this.extensionBridge.saveItem(integration);
+      this.extensionBridge.saveItems(saveItems);
     }
   }, {
     key: "deleteIntegration",

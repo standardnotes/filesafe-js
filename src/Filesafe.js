@@ -217,6 +217,10 @@ export default class Filesafe {
     Misc
   */
 
+  base64toBinary(base64String) {
+    return Utils.base64toBinary(base64String);
+  }
+
   getPlatform() {
     return this.extensionBridge.getPlatform();
   }
