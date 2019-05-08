@@ -56,7 +56,7 @@ export default class FileManager {
   }
 
   async uploadFile({fileItem, inputFileName, fileType, credential, note}) {
-    var integration = this.integrationManager.getDefaultUploadSource();
+    var integration = this.integrationManager.getDefaultIntegration();
     let fileExt = inputFileName.split(".")[1];
     var outputFileName = `${fileItem.uuid}.${fileExt}.sf.json`;
 
@@ -105,7 +105,6 @@ export default class FileManager {
   }
 
   async downloadFileFromDescriptor(fileDescriptor) {
-    // TODO: Use web worker for this as well?
     var integration = this.integrationManager.integrationForFileDescriptor(fileDescriptor);
     if(!integration) {
       var serverMetadata = fileDescriptor.content.serverMetadata;

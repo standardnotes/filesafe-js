@@ -22,6 +22,14 @@ export default class ExtensionBridge {
     return this.componentManager.platform;
   }
 
+  getEnvironment() {
+    return this.componentManager.environment;
+  }
+
+  isMobile() {
+    return this.getEnvironment() == "mobile";
+  }
+
   addEventHandler(callback) {
     let observer = {id: Math.random, callback: callback};
     this.updateObservers.push(observer);

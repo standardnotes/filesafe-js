@@ -46,7 +46,7 @@ export default class IntegrationManager {
     return integration;
   }
 
-  getDefaultUploadSource() {
+  getDefaultIntegration() {
     return this.integrations.find((integration) => {
       return integration.content.isDefaultUploadSource;
     });
@@ -54,7 +54,7 @@ export default class IntegrationManager {
 
   setIntegrationAsDefault(integration) {
     let saveItems = [integration];
-    var currentDefault = this.getDefaultUploadSource();
+    var currentDefault = this.getDefaultIntegration();
     if(currentDefault) {
       currentDefault.content.isDefaultUploadSource = false;
       saveItems.push(currentDefault);
@@ -63,6 +63,19 @@ export default class IntegrationManager {
 
     integration.content.isDefaultUploadSource = true;
     this.extensionBridge.saveItems(saveItems);
+  }
+
+  displayStringForIntegration(integration) {
+    const capitalizeFirstLetter = (string) => {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
+    var comps = integration.content.source.split("_");
+    var result = "";
+    for(var comp of comps) {
+      result += capitalizeFirstLetter(comp) + " ";
+    }
+    return result;
   }
 
   deleteIntegration(integrationObject) {

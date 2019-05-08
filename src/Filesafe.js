@@ -213,6 +213,10 @@ export default class Filesafe {
     return this.integrationManager.deleteIntegration(integration);
   }
 
+  displayStringForIntegration(integration) {
+    return this.integrationManager.displayStringForIntegration(integration);
+  }
+
   /*
     Misc
   */
@@ -221,6 +225,16 @@ export default class Filesafe {
     return Utils.base64toBinary(base64String);
   }
 
+  isMobile() {
+    return this.extensionBridge.isMobile();
+  }
+
+  /* desktop, web, mobile */
+  getEnvironment() {
+    return this.extensionBridge.getEnvironment();
+  }
+
+  /* desktop-{os}, web-{os}, ios, android */
   getPlatform() {
     return this.extensionBridge.getPlatform();
   }

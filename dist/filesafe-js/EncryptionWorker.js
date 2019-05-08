@@ -13245,7 +13245,7 @@ module.exports = g;
                             return _ref150.apply(this, arguments);
                           };
                         }()).catch(function (err) {
-                          console.error("Error computing hmac");
+                          console.error("Error computing hmac", err);
                         }));
 
                       case 10:

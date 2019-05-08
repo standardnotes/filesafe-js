@@ -9,13 +9,18 @@ export default class Utils {
     return new Uint8Array(array);
   }
 
-  static downloadData(data, fileName, fileType) {
+  static downloadData(data, fileName, fileType, useNavigation = false) {
     var link = document.createElement('a');
     link.setAttribute('download', fileName);
     link.href = this.tempUrlForData(data, fileType);
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
+    link.setAttribute("target", "_blank");
+    if(useNavigation) {
+      window.location.href = link.href;
+    } else {
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    }
   }
 
   static tempUrlForData(data, fileType) {

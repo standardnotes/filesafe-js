@@ -12507,7 +12507,7 @@ module.exports =
                             return _ref150.apply(this, arguments);
                           };
                         }()).catch(function (err) {
-                          console.error("Error computing hmac");
+                          console.error("Error computing hmac", err);
                         }));
 
                       case 10:
@@ -13907,6 +13907,16 @@ function () {
       return this.componentManager.platform;
     }
   }, {
+    key: "getEnvironment",
+    value: function getEnvironment() {
+      return this.componentManager.environment;
+    }
+  }, {
+    key: "isMobile",
+    value: function isMobile() {
+      return this.getEnvironment() == "mobile";
+    }
+  }, {
     key: "addEventHandler",
     value: function addEventHandler(callback) {
       var observer = {
@@ -14858,6 +14868,11 @@ function () {
     value: function deleteIntegration(integration) {
       return this.integrationManager.deleteIntegration(integration);
     }
+  }, {
+    key: "displayStringForIntegration",
+    value: function displayStringForIntegration(integration) {
+      return this.integrationManager.displayStringForIntegration(integration);
+    }
     /*
       Misc
     */
@@ -14867,6 +14882,20 @@ function () {
     value: function base64toBinary(base64String) {
       return __WEBPACK_IMPORTED_MODULE_5__lib_util_Utils__["a" /* default */].base64toBinary(base64String);
     }
+  }, {
+    key: "isMobile",
+    value: function isMobile() {
+      return this.extensionBridge.isMobile();
+    }
+    /* desktop, web, mobile */
+
+  }, {
+    key: "getEnvironment",
+    value: function getEnvironment() {
+      return this.extensionBridge.getEnvironment();
+    }
+    /* desktop-{os}, web-{os}, ios, android */
+
   }, {
     key: "getPlatform",
     value: function getPlatform() {
@@ -16607,8 +16636,8 @@ function () {
       return integration;
     }
   }, {
-    key: "getDefaultUploadSource",
-    value: function getDefaultUploadSource() {
+    key: "getDefaultIntegration",
+    value: function getDefaultIntegration() {
       return this.integrations.find(function (integration) {
         return integration.content.isDefaultUploadSource;
       });
@@ -16617,7 +16646,7 @@ function () {
     key: "setIntegrationAsDefault",
     value: function setIntegrationAsDefault(integration) {
       var saveItems = [integration];
-      var currentDefault = this.getDefaultUploadSource();
+      var currentDefault = this.getDefaultIntegration();
 
       if (currentDefault) {
         currentDefault.content.isDefaultUploadSource = false;
@@ -16628,6 +16657,41 @@ function () {
       this.extensionBridge.saveItems(saveItems);
     }
   }, {
+    key: "displayStringForIntegration",
+    value: function displayStringForIntegration(integration) {
+      var capitalizeFirstLetter = function capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+      };
+
+      var comps = integration.content.source.split("_");
+      var result = "";
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = comps[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var comp = _step.value;
+          result += capitalizeFirstLetter(comp) + " ";
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator["return"] != null) {
+            _iterator["return"]();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
+
+      return result;
+    }
+  }, {
     key: "deleteIntegration",
     value: function deleteIntegration(integrationObject) {
       var _this = this;
@@ -16636,13 +16700,13 @@ function () {
       this.extensionBridge.deleteItem(integrationObject, function (response) {
         if (response.deleted && isDefault) {
           if (_this.integrations.length > 0) {
-            var _iteratorNormalCompletion = true;
-            var _didIteratorError = false;
-            var _iteratorError = undefined;
+            var _iteratorNormalCompletion2 = true;
+            var _didIteratorError2 = false;
+            var _iteratorError2 = undefined;
 
             try {
-              for (var _iterator = _this.integrations[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                var currentIntegration = _step.value;
+              for (var _iterator2 = _this.integrations[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                var currentIntegration = _step2.value;
 
                 if (currentIntegration != integrationObject) {
                   _this.setIntegrationAsDefault(currentIntegration);
@@ -16651,16 +16715,16 @@ function () {
                 }
               }
             } catch (err) {
-              _didIteratorError = true;
-              _iteratorError = err;
+              _didIteratorError2 = true;
+              _iteratorError2 = err;
             } finally {
               try {
-                if (!_iteratorNormalCompletion && _iterator["return"] != null) {
-                  _iterator["return"]();
+                if (!_iteratorNormalCompletion2 && _iterator2["return"] != null) {
+                  _iterator2["return"]();
                 }
               } finally {
-                if (_didIteratorError) {
-                  throw _iteratorError;
+                if (_didIteratorError2) {
+                  throw _iteratorError2;
                 }
               }
             }
@@ -17014,7 +17078,7 @@ function () {
             switch (_context2.prev = _context2.next) {
               case 0:
                 fileItem = _ref.fileItem, inputFileName = _ref.inputFileName, fileType = _ref.fileType, credential = _ref.credential, note = _ref.note;
-                integration = this.integrationManager.getDefaultUploadSource();
+                integration = this.integrationManager.getDefaultIntegration();
                 fileExt = inputFileName.split(".")[1];
                 outputFileName = "".concat(fileItem.uuid, ".").concat(fileExt, ".sf.json");
                 return _context2.abrupt("return", new Promise(function (resolve, reject) {
@@ -17083,7 +17147,6 @@ function () {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
-                // TODO: Use web worker for this as well?
                 integration = this.integrationManager.integrationForFileDescriptor(fileDescriptor);
 
                 if (integration) {
@@ -17266,12 +17329,19 @@ function () {
   }, {
     key: "downloadData",
     value: function downloadData(data, fileName, fileType) {
+      var useNavigation = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
       var link = document.createElement('a');
       link.setAttribute('download', fileName);
       link.href = this.tempUrlForData(data, fileType);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
+      link.setAttribute("target", "_blank");
+
+      if (useNavigation) {
+        window.location.href = link.href;
+      } else {
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+      }
     }
   }, {
     key: "tempUrlForData",
