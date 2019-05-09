@@ -16665,6 +16665,7 @@ function () {
 
       var comps = integration.content.source.split("_");
       var result = "";
+      var index = 0;
       var _iteratorNormalCompletion = true;
       var _didIteratorError = false;
       var _iteratorError = undefined;
@@ -16672,7 +16673,13 @@ function () {
       try {
         for (var _iterator = comps[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
           var comp = _step.value;
-          result += capitalizeFirstLetter(comp) + " ";
+          result += capitalizeFirstLetter(comp);
+
+          if (index < comps.length - 1) {
+            result += " ";
+          }
+
+          index++;
         }
       } catch (err) {
         _didIteratorError = true;
@@ -17080,7 +17087,7 @@ function () {
                 fileItem = _ref.fileItem, inputFileName = _ref.inputFileName, fileType = _ref.fileType, credential = _ref.credential, note = _ref.note;
                 integration = this.integrationManager.getDefaultIntegration();
                 fileExt = inputFileName.split(".")[1];
-                outputFileName = "".concat(fileItem.uuid, ".").concat(fileExt, ".sf.json");
+                outputFileName = "".concat(fileItem.uuid, ".sf.json");
                 return _context2.abrupt("return", new Promise(function (resolve, reject) {
                   var worker = new __WEBPACK_IMPORTED_MODULE_2__util_encryption_worker_js___default.a();
                   worker.addEventListener("message", function (event) {

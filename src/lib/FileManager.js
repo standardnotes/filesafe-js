@@ -58,7 +58,7 @@ export default class FileManager {
   async uploadFile({fileItem, inputFileName, fileType, credential, note}) {
     var integration = this.integrationManager.getDefaultIntegration();
     let fileExt = inputFileName.split(".")[1];
-    var outputFileName = `${fileItem.uuid}.${fileExt}.sf.json`;
+    var outputFileName = `${fileItem.uuid}.sf.json`;
 
     return new Promise((resolve, reject) => {
       const worker = new EncryptionWorker();

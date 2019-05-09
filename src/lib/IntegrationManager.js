@@ -72,8 +72,13 @@ export default class IntegrationManager {
 
     var comps = integration.content.source.split("_");
     var result = "";
+    let index = 0;
     for(var comp of comps) {
-      result += capitalizeFirstLetter(comp) + " ";
+      result += capitalizeFirstLetter(comp);
+      if(index < comps.length - 1) {
+        result += " ";
+      }
+      index++;
     }
     return result;
   }
