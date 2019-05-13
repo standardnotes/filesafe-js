@@ -8,10 +8,10 @@ module.exports = {
       "filesafe.min.js": "./src/Filesafe.js",
     },
     output: {
-        path: path.resolve(__dirname, 'dist'),
-        filename: './[name]',
-        library: 'FilesafeJS',
-        libraryTarget: 'commonjs2'
+      path: path.resolve(__dirname, 'dist'),
+      filename: './[name]',
+      library: 'FilesafeJS',
+      libraryTarget: 'commonjs2'
     },
     module: {
       loaders: [
@@ -24,7 +24,7 @@ module.exports = {
           use: {
             loader: 'worker-loader',
             options: {
-              name: 'filesafe-js/EncryptionWorker.js'
+              name: 'filesafe-js/EncryptionWorker.js',
               // inline: true,
               // fallback: false
             }
