@@ -14378,6 +14378,7 @@ function () {
     key: "setCurrentNote",
     value: function setCurrentNote(note) {
       this.currentNote = note;
+      this.notifyObservers();
     }
     /* Files */
 
@@ -14445,7 +14446,12 @@ function () {
             switch (_context2.prev = _context2.next) {
               case 0:
                 fileItem = _ref2.fileItem, inputFileName = _ref2.inputFileName, fileType = _ref2.fileType, credential = _ref2.credential, note = _ref2.note;
-                _context2.next = 3;
+
+                if (!note) {
+                  note = this.currentNote;
+                }
+
+                _context2.next = 4;
                 return this.fileManager.uploadFile({
                   fileItem: fileItem,
                   inputFileName: inputFileName,
@@ -14454,66 +14460,66 @@ function () {
                   note: note
                 });
 
-              case 3:
+              case 4:
                 descriptor = _context2.sent;
 
                 if (!descriptor) {
-                  _context2.next = 24;
+                  _context2.next = 25;
                   break;
                 }
 
                 _iteratorNormalCompletion2 = true;
                 _didIteratorError2 = false;
                 _iteratorError2 = undefined;
-                _context2.prev = 8;
+                _context2.prev = 9;
 
                 for (_iterator2 = this.newFileDescriptorHandlers[Symbol.iterator](); !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
                   observer = _step2.value;
                   observer(descriptor);
                 }
 
-                _context2.next = 16;
+                _context2.next = 17;
                 break;
 
-              case 12:
-                _context2.prev = 12;
-                _context2.t0 = _context2["catch"](8);
+              case 13:
+                _context2.prev = 13;
+                _context2.t0 = _context2["catch"](9);
                 _didIteratorError2 = true;
                 _iteratorError2 = _context2.t0;
 
-              case 16:
-                _context2.prev = 16;
+              case 17:
                 _context2.prev = 17;
+                _context2.prev = 18;
 
                 if (!_iteratorNormalCompletion2 && _iterator2["return"] != null) {
                   _iterator2["return"]();
                 }
 
-              case 19:
-                _context2.prev = 19;
+              case 20:
+                _context2.prev = 20;
 
                 if (!_didIteratorError2) {
-                  _context2.next = 22;
+                  _context2.next = 23;
                   break;
                 }
 
                 throw _iteratorError2;
 
-              case 22:
-                return _context2.finish(19);
-
               case 23:
-                return _context2.finish(16);
+                return _context2.finish(20);
 
               case 24:
-                return _context2.abrupt("return", descriptor);
+                return _context2.finish(17);
 
               case 25:
+                return _context2.abrupt("return", descriptor);
+
+              case 26:
               case "end":
                 return _context2.stop();
             }
           }
-        }, _callee2, this, [[8, 12, 16, 24], [17,, 19, 23]]);
+        }, _callee2, this, [[9, 13, 17, 25], [18,, 20, 24]]);
       }));
 
       function uploadFile(_x2) {

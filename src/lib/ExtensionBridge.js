@@ -69,7 +69,7 @@ export default class ExtensionBridge {
   }
 
   async handleStreamItemsMessage(items) {
-    for(var item of items) {
+    for(let item of items) {
       item = new SFItem(item);
 
       if(item.deleted) {
@@ -81,7 +81,7 @@ export default class ExtensionBridge {
         continue;
       }
 
-      var index = this.indexOfItem(item);
+      let index = this.indexOfItem(item);
       if(index >= 0) {
         this.items[index] = item;
       } else {

@@ -1,13 +1,13 @@
 {
   "name": "filesafe-js",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "FileSafe JS API",
   "main": "dist/filesafe.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack"
   },
-  "author": "Mo Bitar",
+  "author": "Standard Notes",
   "dependencies": {},
   "devDependencies": {
     "@babel/core": "^7.4.3",

@@ -68,6 +68,7 @@ export default class Filesafe {
 
   setCurrentNote(note) {
     this.currentNote = note;
+    this.notifyObservers();
   }
 
 
@@ -98,6 +99,7 @@ export default class Filesafe {
   }
 
   async uploadFile({fileItem, inputFileName, fileType, credential, note}) {
+    if(!note) { note = this.currentNote; }
     let descriptor = await this.fileManager.uploadFile({fileItem, inputFileName, fileType, credential, note});
     if(descriptor) {
       for(let observer of this.newFileDescriptorHandlers) { observer(descriptor);}
