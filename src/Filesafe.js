@@ -241,7 +241,7 @@ export default class Filesafe {
     return this.extensionBridge.getPlatform();
   }
 
-  copyTextToClipboard(text)  {
+  copyTextToClipboard(text) {
     return Utils.copyTextToClipboard(text);
   }
 }
