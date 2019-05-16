@@ -27,6 +27,10 @@ export default class Utils {
     return window.URL.createObjectURL(new Blob([data], {type: fileType ? fileType : 'text/json'}));
   }
 
+  static revokeTempUrl(url) {
+    window.URL.revokeObjectURL(url);
+  }
+
   static copyTextToClipboard(text) {
     if (window.clipboardData && window.clipboardData.setData) {
       // IE specific code path to prevent textarea being shown while dialog is visible.

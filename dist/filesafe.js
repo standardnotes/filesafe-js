@@ -14779,6 +14779,11 @@ function () {
           dataType = _ref9.dataType;
       return __WEBPACK_IMPORTED_MODULE_5__lib_util_Utils__["a" /* default */].tempUrlForData(__WEBPACK_IMPORTED_MODULE_5__lib_util_Utils__["a" /* default */].base64toBinary(base64Data), dataType);
     }
+  }, {
+    key: "revokeTempUrl",
+    value: function revokeTempUrl(url) {
+      __WEBPACK_IMPORTED_MODULE_5__lib_util_Utils__["a" /* default */].revokeTempUrl(url);
+    }
     /* Credentials */
 
   }, {
@@ -17362,6 +17367,11 @@ function () {
       return window.URL.createObjectURL(new Blob([data], {
         type: fileType ? fileType : 'text/json'
       }));
+    }
+  }, {
+    key: "revokeTempUrl",
+    value: function revokeTempUrl(url) {
+      window.URL.revokeObjectURL(url);
     }
   }, {
     key: "copyTextToClipboard",

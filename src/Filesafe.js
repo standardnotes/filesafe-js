@@ -154,6 +154,10 @@ export default class Filesafe {
     return Utils.tempUrlForData(Utils.base64toBinary(base64Data), dataType);
   }
 
+  revokeTempUrl(url) {
+    Utils.revokeTempUrl(url);
+  }
+
   /* Credentials */
 
   async createNewCredentials()  {
