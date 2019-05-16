@@ -17347,10 +17347,13 @@ function () {
   }, {
     key: "downloadData",
     value: function downloadData(data, fileName, fileType) {
+      var _this = this;
+
       var useNavigation = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
       var link = document.createElement('a');
       link.setAttribute('download', fileName);
-      link.href = this.tempUrlForData(data, fileType);
+      var tempUrl = this.tempUrlForData(data, fileType);
+      link.href = tempUrl;
       link.setAttribute("target", "_blank");
 
       if (useNavigation) {
@@ -17360,6 +17363,10 @@ function () {
         link.click();
         link.remove();
       }
+
+      setTimeout(function () {
+        _this.revokeTempUrl(tempUrl);
+      }, 500);
     }
   }, {
     key: "tempUrlForData",

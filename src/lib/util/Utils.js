@@ -12,7 +12,8 @@ export default class Utils {
   static downloadData(data, fileName, fileType, useNavigation = false) {
     var link = document.createElement('a');
     link.setAttribute('download', fileName);
-    link.href = this.tempUrlForData(data, fileType);
+    let tempUrl = this.tempUrlForData(data, fileType);
+    link.href = tempUrl;
     link.setAttribute("target", "_blank");
     if(useNavigation) {
       window.location.href = link.href;
@@ -21,6 +22,10 @@ export default class Utils {
       link.click();
       link.remove();
     }
+
+    setTimeout(() => {
+      this.revokeTempUrl(tempUrl);
+    }, 500);
   }
 
   static tempUrlForData(data, fileType) {
