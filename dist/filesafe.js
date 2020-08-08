@@ -18186,15 +18186,22 @@ function () {
   }, {
     key: "downloadFileFromDescriptor",
     value: function downloadFileFromDescriptor(fileDescriptor) {
-      var integration, serverMetadata;
+      var retries, integration, serverMetadata;
       return regeneratorRuntime.async(function downloadFileFromDescriptor$(_context3) {
         while (1) {
           switch (_context3.prev = _context3.next) {
             case 0:
+              retries = 3;
               integration = this.integrationManager.integrationForFileDescriptor(fileDescriptor);
 
+              while (retries-- > 0 && !integration) {
+                setTimeout(function () {
+                  integration = this.integrationManager.integrationForFileDescriptor(fileDescriptor);
+                }, 1000);
+              }
+
               if (integration) {
-                _context3.next = 6;
+                _context3.next = 8;
                 break;
               }
 
@@ -18208,13 +18215,13 @@ function () {
 
               throw "Unable to find integration";
 
-            case 6:
+            case 8:
               return _context3.abrupt("return", this.relayManager.downloadFile(fileDescriptor, integration).then(function (data) {
                 var item = data.items[0];
                 return item;
               }));
 
-            case 7:
+            case 9:
             case "end":
               return _context3.stop();
           }
