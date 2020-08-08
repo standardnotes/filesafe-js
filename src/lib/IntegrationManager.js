@@ -1,5 +1,11 @@
 import "standard-file-js/dist/regenerator.js";
-import { StandardFile, SFAbstractCrypto, SFItemTransformer, SFHttpManager, SFItem } from 'standard-file-js';
+import {
+  StandardFile,
+  SFAbstractCrypto,
+  SFItemTransformer,
+  SFHttpManager,
+  SFItem
+} from 'standard-file-js';
 import ExtensionBridge from "./ExtensionBridge";
 
 export default class IntegrationManager {
@@ -28,7 +34,7 @@ export default class IntegrationManager {
   async saveIntegrationFromCode(code) {
     var content = this.parseIntegrationCode(code);
 
-    if(this.integrations.length == 0) {
+    if (this.integrations.length == 0) {
       content.isDefaultUploadSource = true;
     }
 
@@ -55,7 +61,7 @@ export default class IntegrationManager {
   setIntegrationAsDefault(integration) {
     let saveItems = [integration];
     var currentDefault = this.getDefaultIntegration();
-    if(currentDefault) {
+    if (currentDefault) {
       currentDefault.content.isDefaultUploadSource = false;
       saveItems.push(currentDefault);
     }
@@ -73,9 +79,9 @@ export default class IntegrationManager {
     var comps = integration.content.source.split("_");
     var result = "";
     let index = 0;
-    for(var comp of comps) {
+    for (var comp of comps) {
       result += capitalizeFirstLetter(comp);
-      if(index < comps.length - 1) {
+      if (index < comps.length - 1) {
         result += " ";
       }
       index++;
@@ -86,10 +92,10 @@ export default class IntegrationManager {
   deleteIntegration(integrationObject) {
     var isDefault = integrationObject.content.isDefaultUploadSource;
     this.extensionBridge.deleteItem(integrationObject, (response) => {
-      if(response.deleted && isDefault) {
-        if(this.integrations.length > 0) {
-          for(var currentIntegration of this.integrations) {
-            if(currentIntegration != integrationObject) {
+      if (response.deleted && isDefault) {
+        if (this.integrations.length > 0) {
+          for (var currentIntegration of this.integrations) {
+            if (currentIntegration != integrationObject) {
               this.setIntegrationAsDefault(currentIntegration);
               break;
             }

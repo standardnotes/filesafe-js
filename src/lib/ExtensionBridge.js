@@ -1,6 +1,12 @@
 import "standard-file-js/dist/regenerator.js";
 import "standard-file-js/dist/lodash.min.js";
-import { StandardFile, SFAbstractCrypto, SFItemTransformer, SFHttpManager, SFItem } from 'standard-file-js';
+import {
+  StandardFile,
+  SFAbstractCrypto,
+  SFItemTransformer,
+  SFHttpManager,
+  SFItem
+} from 'standard-file-js';
 
 export default class ExtensionBridge {
   static FileItemContentTypeKey = "SN|FileSafe|File";
@@ -31,7 +37,10 @@ export default class ExtensionBridge {
   }
 
   addEventHandler(callback) {
-    let observer = {id: Math.random, callback: callback};
+    let observer = {
+      id: Math.random,
+      callback: callback
+    };
     this.updateObservers.push(observer);
     return observer;
   }
@@ -41,7 +50,7 @@ export default class ExtensionBridge {
   }
 
   notifyObserversOfEvent(event) {
-    for(var observer of this.updateObservers) {
+    for (var observer of this.updateObservers) {
       observer.callback(event);
     }
   }
@@ -69,20 +78,20 @@ export default class ExtensionBridge {
   }
 
   async handleStreamItemsMessage(items) {
-    for(let item of items) {
+    for (let item of items) {
       item = new SFItem(item);
 
-      if(item.deleted) {
+      if (item.deleted) {
         this.removeItemFromItems(item);
         continue;
       }
 
-      if(item.isMetadataUpdate) {
+      if (item.isMetadataUpdate) {
         continue;
       }
 
       let index = this.indexOfItem(item);
-      if(index >= 0) {
+      if (index >= 0) {
         this.items[index] = item;
       } else {
         this.items.push(item);
@@ -93,8 +102,8 @@ export default class ExtensionBridge {
   }
 
   indexOfItem(item) {
-    for(var index in this.items) {
-      if(this.items[index].uuid == item.uuid) {
+    for (var index in this.items) {
+      if (this.items[index].uuid == item.uuid) {
         return index;
       }
     }
@@ -102,7 +111,9 @@ export default class ExtensionBridge {
   }
 
   removeItemFromItems(item) {
-    this.items = this.items.filter((candidate) => {return candidate.uuid !== item.uuid});
+    this.items = this.items.filter((candidate) => {
+      return candidate.uuid !== item.uuid
+    });
   }
 
   createItem(item, callback) {
@@ -110,7 +121,8 @@ export default class ExtensionBridge {
   }
 
   createItems(items, callback) {
-    // Not sure why we're nulling UUIDs here. If this was neccessary, componentManager should be the one to do it.
+    // Not sure why we're nulling UUIDs here. If this was neccessary,
+    // componentManager should be the one to do it.
     // for(var item of items) { item.uuid = null; }
     this.componentManager.createItems(items, (createdItems) => {
       callback && callback(createdItems.map((item) => new SFItem(item)));
@@ -131,8 +143,8 @@ export default class ExtensionBridge {
   }
 
   indexOfItem(item) {
-    for(var index in this.items) {
-      if(this.items[index].uuid == item.uuid) {
+    for (var index in this.items) {
+      if (this.items[index].uuid == item.uuid) {
         return index;
       }
     }
@@ -148,6 +160,8 @@ export default class ExtensionBridge {
   }
 
   removeItemFromItems(item) {
-    this.items = this.items.filter((candidate) => {return candidate.uuid !== item.uuid});
+    this.items = this.items.filter((candidate) => {
+      return candidate.uuid !== item.uuid
+    });
   }
 }

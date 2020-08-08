@@ -1,38 +1,50 @@
 import "standard-file-js/dist/regenerator.js";
-import { StandardFile, SFAbstractCrypto, SFItemTransformer, SFHttpManager, SFItem } from 'standard-file-js';
+import {
+  StandardFile,
+  SFAbstractCrypto,
+  SFItemTransformer,
+  SFHttpManager,
+  SFItem
+} from 'standard-file-js';
 import ExtensionBridge from "./ExtensionBridge";
 
 export default class CredentialManager {
-  constructor({extensionBridge, onCredentialLoad}) {
+  constructor({
+    extensionBridge,
+    onCredentialLoad
+  }) {
     this.extensionBridge = extensionBridge;
     this.onCredentialLoad = onCredentialLoad;
     this.credentials = [];
 
     this.extensionBridge.addEventHandler((event) => {
-      if(event == ExtensionBridge.BridgeEventReceivedItems) {
+      if (event == ExtensionBridge.BridgeEventReceivedItems) {
         this.reloadCredentials();
       }
     });
   }
 
   reloadCredentials() {
-    // clear current credentials, search results should contain all items and not just new incoming stuff.
+    // clear current credentials, search results should contain all items and
+    // not just new incoming stuff.
     this.credentials = [];
 
     var searchResults = this.extensionBridge.filterItems(ExtensionBridge.FileSafeCredentialsContentType);
-    if(searchResults.length == 0) {
+    if (searchResults.length == 0) {
       return;
     }
 
-    for(var incomingCredentials of searchResults) {
-      if(!this.credentials.find((candidate) => candidate.uuid == incomingCredentials.uuid)) {
+    for (var incomingCredentials of searchResults) {
+      if (!this.credentials.find((candidate) => {
+        candidate.uuid == incomingCredentials.uuid
+      })) {
         this.credentials.push(incomingCredentials);
       }
     }
 
     this.onCredentialLoad();
 
-    if(this.credentials.length > 0) {
+    if (this.credentials.length > 0) {
       this.didLoadCredentials();
     }
   }
@@ -74,7 +86,7 @@ export default class CredentialManager {
       return candidate.content.isDefault;
     })
 
-    if(!defaultCredentials && this.credentials.length > 0) {
+    if (!defaultCredentials && this.credentials.length > 0) {
       defaultCredentials = this.credentials[0];
     }
 
@@ -83,7 +95,7 @@ export default class CredentialManager {
 
   setCredentialAsDefault = (credential) => {
     let currentDefault = this.getDefaultCredentials();
-    if(currentDefault) {
+    if (currentDefault) {
       currentDefault.content.isDefault = false;
     }
     credential.content.isDefault = true;

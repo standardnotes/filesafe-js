@@ -1,5 +1,10 @@
 import "standard-file-js/dist/regenerator.js";
-import { StandardFile, SFAbstractCrypto, SFItemTransformer, SFHttpManager } from 'standard-file-js';
+import {
+  StandardFile,
+  SFAbstractCrypto,
+  SFItemTransformer,
+  SFHttpManager
+} from 'standard-file-js';
 
 export default class RelayManager {
 
@@ -28,8 +33,10 @@ export default class RelayManager {
         resolve(response.metadata);
       }, (errorResponse) => {
         var error = errorResponse.error;
-        if(!error) {
-          error = {message: "File upload failed."};
+        if (!error) {
+          error = {
+            message: "File upload failed."
+          };
         }
         console.log("Upload error response", error);
         reject(error);
