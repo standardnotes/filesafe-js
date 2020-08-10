@@ -105,13 +105,17 @@ export default class FileManager {
   }
 
   async downloadFileFromDescriptor(fileDescriptor) {
-    var retries = 3;
-    var integration = this.integrationManager.integrationForFileDescriptor(fileDescriptor);
-    while (retries-- > 0 && !integration) {
-      setTimeout(function() {
-        integration = this.integrationManager.integrationForFileDescriptor(fileDescriptor);
-      }, 1000);
+    function getIntegration(retries) {
+      var integrationTry = this.integrationManager.integrationForFileDescriptor(fileDescriptor);
+      if (integrationTry || retries <= 0) {
+        return integrationTry;
+      } else {
+        return setTimeout(getIntegration(--retries), 1000);
+      }
     }
+    var numRetries = 3;
+    var integration = getIntegration(numRetries);
+
     if(!integration) {
       var serverMetadata = fileDescriptor.content.serverMetadata;
       if(serverMetadata) {
