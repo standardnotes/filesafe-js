@@ -12,10 +12,10 @@ import {
 import RelayManager from "../RelayManager";
 
 self.addEventListener('message', async function (e) {
-  var data = e.data;
+  const data = e.data;
 
   if (data.operation == "encrypt") {
-    var fileItem = new SFItem({
+    const fileItem = new SFItem({
       content_type: data.contentType,
       content: {
         rawData: data.fileData,
@@ -24,7 +24,7 @@ self.addEventListener('message', async function (e) {
       }
     });
 
-    var fileItemObject = new SFItemParams(fileItem, data.keys, data.authParams);
+    const fileItemObject = new SFItemParams(fileItem, data.keys, data.authParams);
     fileItemObject.paramsForSync().then((params) => {
       // Encryption complete
       self.postMessage({
@@ -33,8 +33,8 @@ self.addEventListener('message', async function (e) {
     })
   } else if (data.operation == "decrypt") {
     SFJS.itemTransformer.decryptItem(data.item, data.keys).then(() => {
-      var decryptedItem = new SFItem(data.item);
-      var decryptedData = decryptedItem.content.rawData;
+      const decryptedItem = new SFItem(data.item);
+      const decryptedData = decryptedItem.content.rawData;
       if (decryptedItem.errorDecrypting) {
         self.postMessage({
           error: {
@@ -54,7 +54,7 @@ self.addEventListener('message', async function (e) {
       });
     })
   } else if (data.operation == "upload") {
-    let relayManager = new RelayManager();
+    const relayManager = new RelayManager();
     relayManager.setCredentials(data.credentials);
     relayManager.uploadFile(data.outputFileName, data.fileItem, data.integration)
     .then((metadata) => {

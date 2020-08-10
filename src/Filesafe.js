@@ -55,7 +55,7 @@ export default class Filesafe {
   }
 
   notifyObservers() {
-    for (let observer of this.dataChangeObservers) {
+    for (const observer of this.dataChangeObservers) {
       observer();
     }
   }
@@ -115,7 +115,7 @@ export default class Filesafe {
     if (!note) {
       note = this.currentNote;
     }
-    let descriptor = await this.fileManager.uploadFile({
+    const descriptor = await this.fileManager.uploadFile({
       fileItem,
       inputFileName,
       fileType,
@@ -123,7 +123,7 @@ export default class Filesafe {
       note
     });
     if (descriptor) {
-      for (let observer of this.newFileDescriptorHandlers) {
+      for (const observer of this.newFileDescriptorHandlers) {
         observer(descriptor);
       }
     }
@@ -132,12 +132,12 @@ export default class Filesafe {
 
   async encryptAndUploadJavaScriptFileObject(jsFile) {
     return new Promise((resolve, reject) => {
-      let reader = new FileReader();
+      const reader = new FileReader();
       reader.onload = async (e) => {
-        var data = e.target.result;
-        var arrayBuffer = data;
-        var base64Data = await SFJS.crypto.arrayBufferToBase64(arrayBuffer);
-        let result = await this.encryptAndUploadData({
+        const data = e.target.result;
+        const arrayBuffer = data;
+        const base64Data = await SFJS.crypto.arrayBufferToBase64(arrayBuffer);
+        const result = await this.encryptAndUploadData({
           base64Data: base64Data,
           inputFileName: jsFile.name,
           fileType: jsFile.type

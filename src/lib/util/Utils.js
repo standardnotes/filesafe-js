@@ -1,18 +1,18 @@
 export default class Utils {
 
   static base64toBinary(dataURI) {
-    var binary = atob(dataURI);
-    var array = [];
-    for (var i = 0; i < binary.length; i++) {
+    const binary = atob(dataURI);
+    const array = [];
+    for (const i = 0; i < binary.length; i++) {
       array.push(binary.charCodeAt(i));
     }
     return new Uint8Array(array);
   }
 
   static downloadData(data, fileName, fileType, useNavigation = false) {
-    var link = document.createElement('a');
+    const link = document.createElement('a');
     link.setAttribute('download', fileName);
-    let tempUrl = this.tempUrlForData(data, fileType);
+    const tempUrl = this.tempUrlForData(data, fileType);
     link.href = tempUrl;
     link.setAttribute("target", "_blank");
     if (useNavigation) {

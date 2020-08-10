@@ -37,7 +37,7 @@ export default class ExtensionBridge {
   }
 
   addEventHandler(callback) {
-    let observer = {
+    const observer = {
       id: Math.random,
       callback: callback
     };
@@ -50,7 +50,7 @@ export default class ExtensionBridge {
   }
 
   notifyObserversOfEvent(event) {
-    for (var observer of this.updateObservers) {
+    for (const observer of this.updateObservers) {
       observer.callback(event);
     }
   }
@@ -90,7 +90,7 @@ export default class ExtensionBridge {
         continue;
       }
 
-      let index = this.indexOfItem(item);
+      const index = this.indexOfItem(item);
       if (index >= 0) {
         this.items[index] = item;
       } else {
@@ -102,7 +102,7 @@ export default class ExtensionBridge {
   }
 
   indexOfItem(item) {
-    for (var index in this.items) {
+    for (const index in this.items) {
       if (this.items[index].uuid == item.uuid) {
         return index;
       }
@@ -123,7 +123,7 @@ export default class ExtensionBridge {
   createItems(items, callback) {
     // Not sure why we're nulling UUIDs here. If this was neccessary,
     // componentManager should be the one to do it.
-    // for(var item of items) { item.uuid = null; }
+    // for(let item of items) { item.uuid = null; }
     this.componentManager.createItems(items, (createdItems) => {
       callback && callback(createdItems.map((item) => new SFItem(item)));
     })
@@ -143,7 +143,7 @@ export default class ExtensionBridge {
   }
 
   indexOfItem(item) {
-    for (var index in this.items) {
+    for (const index in this.items) {
       if (this.items[index].uuid == item.uuid) {
         return index;
       }

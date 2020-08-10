@@ -29,12 +29,12 @@ export default class CredentialManager {
     // not just new incoming stuff.
     this.credentials = [];
 
-    var searchResults = this.extensionBridge.filterItems(ExtensionBridge.FileSafeCredentialsContentType);
+    const searchResults = this.extensionBridge.filterItems(ExtensionBridge.FileSafeCredentialsContentType);
     if (searchResults.length == 0) {
       return;
     }
 
-    for (var incomingCredentials of searchResults) {
+    for (const incomingCredentials of searchResults) {
       if (!this.credentials.find((candidate) => {
         candidate.uuid == incomingCredentials.uuid
       })) {
@@ -50,14 +50,14 @@ export default class CredentialManager {
   }
 
   async createNewCredentials() {
-    let bits = 256;
-    let identifer = await SFJS.crypto.generateRandomKey(bits);
-    let password = await SFJS.crypto.generateRandomKey(bits);
+    const bits = 256;
+    const identifer = await SFJS.crypto.generateRandomKey(bits);
+    const password = await SFJS.crypto.generateRandomKey(bits);
 
-    let credentialParams = await SFJS.crypto.generateInitialKeysAndAuthParamsForUser(identifer, password);
+    const credentialParams = await SFJS.crypto.generateInitialKeysAndAuthParamsForUser(identifer, password);
     credentialParams.isDefault = this.credentials.length == 0;
 
-    let credentials = new SFItem({
+    const credentials = new SFItem({
       content_type: ExtensionBridge.FileSafeCredentialsContentType,
       content: credentialParams
     });
@@ -82,7 +82,7 @@ export default class CredentialManager {
   }
 
   getDefaultCredentials = () => {
-    var defaultCredentials = this.credentials.find((candidate) => {
+    let defaultCredentials = this.credentials.find((candidate) => {
       return candidate.content.isDefault;
     })
 
@@ -94,7 +94,7 @@ export default class CredentialManager {
   }
 
   setCredentialAsDefault = (credential) => {
-    let currentDefault = this.getDefaultCredentials();
+    const currentDefault = this.getDefaultCredentials();
     if (currentDefault) {
       currentDefault.content.isDefault = false;
     }
