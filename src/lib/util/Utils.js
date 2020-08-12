@@ -3,7 +3,7 @@ export default class Utils {
   static base64toBinary(dataURI) {
     const binary = atob(dataURI);
     const array = [];
-    for (const i = 0; i < binary.length; i++) {
+    for (let i = 0; i < binary.length; i++) {
       array.push(binary.charCodeAt(i));
     }
     return new Uint8Array(array);
