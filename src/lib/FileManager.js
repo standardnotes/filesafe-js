@@ -32,7 +32,7 @@ export default class FileManager {
   }
 
   fileDescriptorsEncryptedWithCredential(credential) {
-    var descriptors = this.extensionBridge.getFileDescriptors();
+    const descriptors = this.extensionBridge.getFileDescriptors();
     return descriptors.filter((descriptor) => {
       return descriptor.content.references.find((ref) => ref.uuid == credential.uuid);
     })
@@ -42,7 +42,7 @@ export default class FileManager {
     return new Promise((resolve, reject) => {
       this.extensionBridge.deleteItems([fileDescriptor], (response) => {
         if(response.deleted) {
-          let integration = this.integrationManager.integrationForFileDescriptor(fileDescriptor);
+          const integration = this.integrationManager.integrationForFileDescriptor(fileDescriptor);
           if(integration) {
             this.relayManager.deleteFile(fileDescriptor, integration).then((relayResponse) => {
               resolve();
@@ -56,22 +56,22 @@ export default class FileManager {
   }
 
   async uploadFile({fileItem, inputFileName, fileType, credential, note}) {
-    var integration = this.integrationManager.getDefaultIntegration();
-    let fileExt = inputFileName.split(".")[1];
-    var outputFileName = `${fileItem.uuid}.sf.json`;
+    const integration = this.integrationManager.getDefaultIntegration();
+    const fileExt = inputFileName.split(".")[1];
+    const outputFileName = `${fileItem.uuid}.sf.json`;
 
     return new Promise((resolve, reject) => {
       const worker = new EncryptionWorker();
 
       worker.addEventListener("message", (event) => {
-        var data = event.data;
+        const data = event.data;
         if(data.error) {
           console.log("Error uploading file", data.error);
           reject(data.error);
           return;
         }
 
-        var fileDescriptor = new SFItem({
+        const fileDescriptor = new SFItem({
           content_type: ExtensionBridge.FileDescriptorContentTypeKey,
           content: {
             serverMetadata: event.data.metadata,
@@ -91,8 +91,8 @@ export default class FileManager {
         });
       });
 
-      var operation = "upload";
-      var params = {
+      const operation = "upload";
+      const params = {
         outputFileName: outputFileName,
         fileItem: fileItem,
         integration: integration,
@@ -105,9 +105,9 @@ export default class FileManager {
   }
 
   async downloadFileFromDescriptor(fileDescriptor) {
-    var integration = this.integrationManager.integrationForFileDescriptor(fileDescriptor);
+    const integration = this.integrationManager.integrationForFileDescriptor(fileDescriptor);
     if(!integration) {
-      var serverMetadata = fileDescriptor.content.serverMetadata;
+      const serverMetadata = fileDescriptor.content.serverMetadata;
       if(serverMetadata) {
         alert(`Unable to find integration named '${serverMetadata.source}'.`);
       } else {
@@ -117,7 +117,7 @@ export default class FileManager {
       return;
     }
     return this.relayManager.downloadFile(fileDescriptor, integration).then((data) => {
-      var item = data.items[0];
+      const item = data.items[0];
       return item;
     })
   }
@@ -150,7 +150,7 @@ export default class FileManager {
       const worker = new EncryptionWorker();
 
       worker.addEventListener("message", function (event) {
-        var data = event.data;
+        const data = event.data;
         if(data.error) {
           reject(data.error);
           return;

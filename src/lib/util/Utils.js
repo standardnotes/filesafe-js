@@ -1,21 +1,21 @@
 export default class Utils {
 
   static base64toBinary(dataURI) {
-    var binary = atob(dataURI);
-    var array = [];
-    for(var i = 0; i < binary.length; i++) {
+    const binary = atob(dataURI);
+    const array = [];
+    for (let i = 0; i < binary.length; i++) {
       array.push(binary.charCodeAt(i));
     }
     return new Uint8Array(array);
   }
 
   static downloadData(data, fileName, fileType, useNavigation = false) {
-    var link = document.createElement('a');
+    const link = document.createElement('a');
     link.setAttribute('download', fileName);
-    let tempUrl = this.tempUrlForData(data, fileType);
+    const tempUrl = this.tempUrlForData(data, fileType);
     link.href = tempUrl;
     link.setAttribute("target", "_blank");
-    if(useNavigation) {
+    if (useNavigation) {
       window.location.href = link.href;
     } else {
       document.body.appendChild(link);
@@ -29,7 +29,9 @@ export default class Utils {
   }
 
   static tempUrlForData(data, fileType) {
-    return window.URL.createObjectURL(new Blob([data], {type: fileType ? fileType : 'text/json'}));
+    return window.URL.createObjectURL(new Blob([data], {
+      type: fileType ? fileType : 'text/json'
+    }));
   }
 
   static revokeTempUrl(url) {
@@ -38,7 +40,8 @@ export default class Utils {
 
   static copyTextToClipboard(text) {
     if (window.clipboardData && window.clipboardData.setData) {
-      // IE specific code path to prevent textarea being shown while dialog is visible.
+      // IE specific code path to prevent textarea being shown while dialog is
+      // visible.
       return clipboardData.setData("Text", text);
     } else if (document.queryCommandSupported && document.queryCommandSupported("copy")) {
       let textarea;
@@ -64,7 +67,7 @@ export default class Utils {
 
         textarea.setSelectionRange(0, textarea.value.length);
         result = document.execCommand('copy');
-      } catch(err) {
+      } catch (err) {
         console.error(err);
         result = null;
       } finally {
