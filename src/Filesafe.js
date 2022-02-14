@@ -314,4 +314,19 @@ export default class Filesafe {
   copyTextToClipboard(text) {
     return Utils.copyTextToClipboard(text);
   }
+
+  /**
+   * FileSafe will be deprecated and no longer offered to new users as of February 9th, 2022.
+   * Existing users who have the extension installed, will continue to have access to it indefinitely.
+   */
+  isDeprecated() {
+    const canUploadFiles = Boolean(
+      this.getAllCredentials().length > 0 && this.getAllIntegrations().length > 0
+    );
+    const hasEncryptedFiles = Boolean(
+      this.getAllFileDescriptors().length > 0
+    );
+
+    return !(canUploadFiles || hasEncryptedFiles);
+  }
 }
