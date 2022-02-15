@@ -316,10 +316,10 @@ export default class Filesafe {
   }
 
   /**
-   * FileSafe will be deprecated and no longer offered to new users as of February 9th, 2022.
+   * FileSafe is deprecated and no longer offered to new users as of February 9th, 2022.
    * Existing users who have the extension installed, will continue to have access to it indefinitely.
    */
-  isDeprecated() {
+  hasLegacyAccess() {
     const canUploadFiles = Boolean(
       this.getAllCredentials().length > 0 && this.getAllIntegrations().length > 0
     );
@@ -327,6 +327,6 @@ export default class Filesafe {
       this.getAllFileDescriptors().length > 0
     );
 
-    return !(canUploadFiles || hasEncryptedFiles);
+    return canUploadFiles || hasEncryptedFiles;
   }
 }
