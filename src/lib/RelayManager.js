@@ -1,10 +1,5 @@
 import "standard-file-js/dist/regenerator.js"
-import {
-  StandardFile,
-  SFAbstractCrypto,
-  SFItemTransformer,
-  SFHttpManager,
-} from "standard-file-js"
+import { SFHttpManager } from "standard-file-js"
 
 export default class RelayManager {
   constructor() {
